@@ -32,8 +32,10 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 Route::prefix('auth')->middleware('guest')->group(function () {
-    Route::get('/github', [OAuthController::class, 'redirectToProvider'])
+    Route::get('{provider}', [OAuthController::class, 'redirectToProvider'])
+    ->where('provider', 'github|google')
     ->name('redirectToProvider');
-    Route::get('/github/callback', [OAuthController::class, 'OauthCallback'])
+    Route::get('{provider}/callback', [OAuthController::class, 'OauthCallback'])
+    ->where('provider', 'github|google')
     ->name('oauthCallback');
 });
