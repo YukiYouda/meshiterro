@@ -23,10 +23,15 @@ class ArticleRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'caption' => 'required|string|',
-            'info' => 'required|string',
-            'file' => 'required|file|image'
+        $rule = [
+            'caption' => 'required|string|max:255',
+            'info' => 'max:255',
         ];
+
+        $route = $this->route()->getName();
+        if ($route === 'articles.store') {
+            $rule['file'] = 'required|file|image';
+        }
+        return $rule;
     }
 }
