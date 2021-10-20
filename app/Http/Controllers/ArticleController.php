@@ -46,32 +46,29 @@ class ArticleController extends Controller
     {
         $article = new Article();
         $article->fill($request->all());
-
         $article->user_id = $request->user()->id;
-
-        $file = $request->file('file');
+        $files = $request->file('file');
 
         DB::beginTransaction();
 
         try {
             $article->save();
 
-            if(!$path = Storage::putFile('articles', $file)){
-                throw new Exception('ファイルの保存に失敗しました');
-            };
+            foreach ($files as $file) {
+                $file_name = $file->getClientOriginalName();
+                $path = Storage::putFile('articles', $file);
 
-            $attachment = new Attachment([
-                'article_id' => $article->id,
-                'org_name' => $file->getClientOriginalName(),
-                'name' => basename($path),
-            ]);
+                $attachment = new Attachment;
+                $attachment->article_id = $article->id;
+                $attachment->org_name = $file_name;
+                $attachment->name = basename($path);
 
-            $attachment->save();
+                $attachment->save();
+            }
+
             DB::commit();
         } catch (\Exception $e) {
-            if(!empty($path)){
-                Storage::delete($path);
-            }
+
             DB::rollBack();
             return back()
                 ->withErrors($e->getMessage());
@@ -117,7 +114,6 @@ class ArticleController extends Controller
 
         try {
             $article->save();
-
         } catch (\Exception $e) {
             return back()
                 ->withErrors($e->getMessage());
@@ -137,13 +133,12 @@ class ArticleController extends Controller
 
         try {
             $article->delete();
-            $article->attachment->delete();
-            if(!Storage::delete($path)){
+            $article->attachments()->delete();
+            if (!Storage::delete($path)) {
                 throw new Exception('ファイルの削除に失敗しました');
             }
 
             DB::commit();
-
         } catch (\Exception $e) {
             return back()
                 ->withErrors($e->getMessage());

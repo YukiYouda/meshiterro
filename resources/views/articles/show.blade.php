@@ -8,7 +8,9 @@
             <figure class="m-3">
                 <div class="row">
                     <div class="col-6">
-                        <img src="{{ $article->image_url }}" width="100%">
+                        @foreach ($article->attachments as $attachment)
+                            <img src="{{ Storage::url('articles/' . $attachment->name) }}" width="100%">
+                        @endforeach
                     </div>
                     <div class="col-6">
                         <figcaption>
@@ -37,7 +39,7 @@
         <div class="d-grid col-6 mx-auto gap-3 mt-3">
             <input type="submit" value="削除" form="form" class="btn btn-danger btn-lg"
                 onclick="if (!confirm('本当に削除してよろしいですか？')) {return false};">
-    @endcan
+        @endcan
         <a href="{{ route('articles.index') }}" class="btn btn-secondary btn-lg">戻る</a>
     </div>
 @endsection

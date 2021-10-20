@@ -14,4 +14,9 @@ class Attachment extends Model
         'org_name',
         'name',
     ];
+
+    public function article()
+    {
+        return $this->belongsTo(Article::class);
+    } 
 }
