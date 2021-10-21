@@ -56,6 +56,7 @@ class ArticleController extends Controller
 
             foreach ($files as $file) {
                 $file_name = $file->getClientOriginalName();
+                $paths[] = Storage::putFile('articles', $file);
                 $path = Storage::putFile('articles', $file);
 
                 $attachment = new Attachment;
@@ -70,6 +71,12 @@ class ArticleController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
+            foreach ($paths as $path) {
+                if (!empty($path)) {
+                    Storage::delete($path);
+                }
+            }
+
             return back()
                 ->withErrors($e->getMessage());
         }
@@ -118,6 +125,10 @@ class ArticleController extends Controller
             return back()
                 ->withErrors($e->getMessage());
         }
+
+        return redirect()
+            ->route('articles.index')
+            ->with(['flash_message' => '更新が完了しました']);
     }
 
     /**

@@ -22,7 +22,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-primary">送信</button>
+            <input type="submit">
         </form>
     </div>
 @endsection
