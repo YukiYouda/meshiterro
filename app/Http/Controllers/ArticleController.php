@@ -48,29 +48,39 @@ class ArticleController extends Controller
         $article->fill($request->all());
         $article->user_id = $request->user()->id;
         $files = $request->file('file');
+        $paths = [];
 
         DB::beginTransaction();
+
 
         try {
             $article->save();
 
-            foreach ($files as $file) {
-                $file_name = $file->getClientOriginalName();
-                $paths[] = Storage::putFile('articles', $file);
-                $path = Storage::putFile('articles', $file);
+            if ($files) {
 
-                $attachment = new Attachment;
-                $attachment->article_id = $article->id;
-                $attachment->org_name = $file_name;
-                $attachment->name = basename($path);
+                foreach ($files as $file) {
+                    $file_name = $file->getClientOriginalName();
+                    $path = Storage::putFile('articles', $file);
+                    $paths[] = $path;
 
-                $attachment->save();
+                    if (!$paths) {
+                        throw new \Exception("保存に失敗しました");
+                    }
+
+                    $attachment = new Attachment;
+                    $attachment->article_id = $article->id;
+                    $attachment->org_name = $file_name;
+                    $attachment->name = basename($path);
+
+                    $attachment->save();
+                }
+
+                DB::commit();
             }
-
-            DB::commit();
         } catch (\Exception $e) {
 
             DB::rollBack();
+
             foreach ($paths as $path) {
                 if (!empty($path)) {
                     Storage::delete($path);
