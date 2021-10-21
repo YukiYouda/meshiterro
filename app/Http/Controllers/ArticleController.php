@@ -128,20 +128,11 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        $path = $article->image_path;
-        DB::beginTransaction();
+        $attachments = $article->attachments;
+        $article->delete();
 
-        try {
-            $article->delete();
-            $article->attachments()->delete();
-            if (!Storage::delete($path)) {
-                throw new Exception('ファイルの削除に失敗しました');
-            }
-
-            DB::commit();
-        } catch (\Exception $e) {
-            return back()
-                ->withErrors($e->getMessage());
+        foreach ($attachments as $attachment) {
+            Storage::delete('articles/' . $attachment->name);
         }
 
         return redirect()

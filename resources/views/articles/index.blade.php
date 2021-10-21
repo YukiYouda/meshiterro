@@ -3,7 +3,7 @@
 @section('content')
     @include('partial.flash')
     @include('partial.errors')
-    <section class="row position-relative" data-masonry='{ "percentPosition": true }'>
+    <section class="row position-relative mt-3" data-masonry='{ "percentPosition": true }'>
         @foreach ($articles as $article)
             <div class="col-6 col-md-4 col-lg-3 col-sl-2 mb-4">
                 <article class="card position-relative">

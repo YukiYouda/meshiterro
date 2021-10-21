@@ -28,10 +28,10 @@ class ArticleRequest extends FormRequest
             'info' => 'max:255',
         ];
 
-        // $route = $this->route()->getName();
-        // if ($route === 'articles.store') {
-        //     $rule['file[]'] = 'file|image';
-        // }
+        $route = $this->route()->getName();
+        if ($route === 'articles.store') {
+            $rule['file'] = 'required';
+        }
         return $rule;
     }
 }

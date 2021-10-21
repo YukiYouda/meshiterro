@@ -9,17 +9,19 @@
                 <div class="row">
                     <div class="col-6">
                         @foreach ($article->attachments as $attachment)
-                            <img src="{{ Storage::url('articles/' . $attachment->name) }}" width="100%">
+                            <div class="mb-2">
+                                <img src="{{ Storage::url('articles/' . $attachment->name) }}" width="100%">
+                            </div>
                         @endforeach
                     </div>
                     <div class="col-6">
                         <figcaption>
-                            <h1>
+                            <div class="mb-5 font">
                                 {{ $article->caption }}
-                            </h1>
-                            <h3>
+                            </div>
+                            <div class="font">
                                 {{ $article->info }}
-                            </h3>
+                            </div>
                         </figcaption>
                     </div>
                 </div>
