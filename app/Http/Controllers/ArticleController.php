@@ -63,7 +63,7 @@ class ArticleController extends Controller
                     $path = Storage::putFile('articles', $file);
                     $paths[] = $path;
 
-                    if (!$paths) {
+                    if (!$path) {
                         throw new \Exception("保存に失敗しました");
                     }
 
