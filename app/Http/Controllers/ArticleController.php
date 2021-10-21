@@ -81,8 +81,9 @@ class ArticleController extends Controller
 
             DB::rollBack();
 
-            foreach ($paths as $path) {
-                if (!empty($path)) {
+            if ($paths) {
+                foreach ($paths as $path) {
+
                     Storage::delete($path);
                 }
             }
